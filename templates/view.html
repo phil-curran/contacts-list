@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block head %}
+<title>Contacts</title>
+{% endblock %} {% block body %}
+<h2 class="text-center">Detail View</h2>
+
+<hr />
+
+<p><strong>ID:</strong> {{ contact.id }}</p>
+<p><strong>Name:</strong> {{ contact.name }}</p>
+<p><strong>Email:</strong> {{ contact.email }}</p>
+<p><strong>Phone:</strong> {{ contact.phone }}</p>
+<p><strong>Created:</strong> {{ contact.date_created }}</p>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %} {% block head %}
+<title>Contacts</title>
+{% endblock %} {% block body %}
+<h2 class="text-center">Contacts List</h2>
+
+<hr />
+
+{% if contacts|length < 1 %}
+
+<h3 class="text-center">No Contacts Found</h3>
+
+{% else %}
+
+<table class="table u-full-width">
+  <thead>
+    <tr>
+      <th style="width: 2%">Id</th>
+      <th style="width: 11%">Name</th>
+      <th style="width: 11%">Phone</th>
+      <th style="width: 11%">Email</th>
+      <th style="width: 10%">Date Added</th>
+      <th style="width: 5%">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for contact in contacts %}
+    <tr>
+      <td>{{ contact.id }}</td>
+      <td>{{ contact.name }}</td>
+      <td>{{ contact.phone }}</td>
+      <td>{{ contact.email }}</td>
+      <td>{{ contact.date_created.date() }}</td>
+      <td>
+        <a href="/view/{{contact.id}}" class="button green"
+          ><span class="material-symbols-sharp"> visibility </span></a
+        >
+        <a href="/update/{{contact.id}}" class="button yellow"
+          ><span class="material-symbols-sharp"> edit_note </span></a
+        >
+        <a href="/delete/{{contact.id}}" class="button red"
+          ><span class="material-symbols-sharp"> delete </span></a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+<h3 class="text-center">Add Contact</h3>
+<form action="/" method="POST">
+  <div class="row">
+    <div class="four columns">
+      <label for="name">Name</label>
+      <input class="u-full-width" type="text" name="name" id="name" />
+    </div>
+    <div class="three columns">
+      <label for="phone">Phone</label>
+      <input class="u-full-width" type="text" name="phone" id="phone" />
+    </div>
+    <div class="three columns">
+      <label for="name">Email</label>
+      <input class="u-full-width" type="text" name="email" id="email" />
+    </div>
+    <div class="two columns">
+      <label for="submit">.</label>
+      <input type="submit" value="Add Contact" />
+    </div>
+  </div>
+</form>
+
+{% endblock %}
