@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -20,10 +20,21 @@ class Contact(db.Model):
     # Define the phone column as a string of maximum length 200, which cannot be null
     phone = db.Column(db.String(200), nullable=False)
     # Define the email column as a string of maximum length 200, which cannot be null
-    email = db.Column(db.String(200), nullable=False)
+    email: object = db.Column(db.String(200), nullable=False)
     # Define the date_created column as a DateTime, with default value set to the current timestamp
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     # Define the string representation of a Contact object
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializable format"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'phone': self.phone,
+            'email': self.email,
+            'date_created': self.date_created
+        }
 
     def __repr__(self):
         # Return a string that includes the id of the Contact object
@@ -84,6 +95,26 @@ def update(id):
 def view(id):
     contact = Contact.query.get_or_404(id)
     return render_template('view.html', contact=contact)
+
+
+@app.route('/api/contacts')
+def api_contacts():
+  # return db query results as a JSON list
+  return jsonify([contact.serialize for contact in Contact.query.all()])
+
+
+@app.post('/api/contacts')
+def add_contact():
+    data = request.get_json()
+    try:
+        contact = Contact(name=data['name'], email=data['email'], phone=data['phone'])
+        db.session.add(contact)
+        db.session.commit()
+        return jsonify({"status": "success"})
+    except Exception:
+        return app.response_class(response={"status": "failure"},
+                                  status=500,
+                                  mimetype='application/json')
 
 
 # Run the app
